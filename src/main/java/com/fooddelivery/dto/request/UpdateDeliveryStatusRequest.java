@@ -2,11 +2,15 @@ package com.fooddelivery.dto.request;
 
 import com.fooddelivery.enums.OrderStatus;
 import jakarta.validation.constraints.NotNull;
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Value
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class UpdateDeliveryStatusRequest {
 
     @NotNull
-    OrderStatus status;
+    private OrderStatus status;
 }
