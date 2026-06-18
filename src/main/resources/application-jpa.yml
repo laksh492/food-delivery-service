@@ -3,8 +3,6 @@ app:
     type: jpa
 
 spring:
-  autoconfigure:
-    exclude: []
   datasource:
     url: jdbc:postgresql://localhost:5432/food_delivery
     username: ${DB_USER:food_user}

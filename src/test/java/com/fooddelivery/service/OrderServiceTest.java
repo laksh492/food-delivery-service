@@ -3,7 +3,6 @@ package com.fooddelivery.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.fooddelivery.config.PaymentProperties;
 import com.fooddelivery.dto.request.CreateMenuItemRequest;
 import com.fooddelivery.dto.request.CreateUserRequest;
 import com.fooddelivery.dto.request.OrderItemRequest;
@@ -59,9 +58,7 @@ class OrderServiceTest {
         paymentRepository = new InMemoryPaymentRepository();
 
         restaurantService = new RestaurantService(restaurantRepository, menuItemRepository, userRepository);
-        PaymentProperties paymentProperties = new PaymentProperties();
-        paymentProperties.setMode("ALWAYS_SUCCESS");
-        paymentService = new PaymentService(paymentRepository, new SimulatedPaymentGateway(paymentProperties));
+        paymentService = new PaymentService(paymentRepository, new SimulatedPaymentGateway());
         notificationPublisher = new RecordingNotificationPublisher();
         orderService = new OrderService(
                 orderRepository, restaurantService, paymentService, null, notificationPublisher);

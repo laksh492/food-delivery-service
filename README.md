@@ -109,13 +109,7 @@ export DB_USER=food_user
 export DB_PASS=food_pass
 ```
 
-Payment simulation mode (`payment.simulation.mode`):
-
-- `ALWAYS_SUCCESS` (default in dev/test)
-- `ALWAYS_FAIL`
-- `RANDOM` (uses `payment.simulation.success-rate`, default `0.8`)
-
-Clients can also pass `paymentScenario` (`SUCCEED` / `FAIL`) on place-order and retry-payment requests.
+Payment outcome is controlled per request via optional `paymentScenario` on place-order and retry-payment (`SUCCEED` or `FAIL`). When omitted, payment succeeds.
 
 ## Authentication
 

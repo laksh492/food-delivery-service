@@ -25,7 +25,6 @@ import com.fooddelivery.repository.inmemory.InMemoryUserRepository;
 import com.fooddelivery.service.OrderService;
 import com.fooddelivery.service.PaymentService;
 import com.fooddelivery.service.RestaurantService;
-import com.fooddelivery.config.PaymentProperties;
 import com.fooddelivery.gateway.SimulatedPaymentGateway;
 import com.fooddelivery.support.RecordingNotificationPublisher;
 import java.math.BigDecimal;
@@ -54,10 +53,8 @@ class RetryPaymentConcurrencyTest {
 
         RestaurantService restaurantService = new RestaurantService(
                 restaurantRepository, menuItemRepository, userRepository);
-        PaymentProperties paymentProperties = new PaymentProperties();
-        paymentProperties.setMode("ALWAYS_SUCCESS");
         PaymentService paymentService = new PaymentService(
-                paymentRepository, new SimulatedPaymentGateway(paymentProperties));
+                paymentRepository, new SimulatedPaymentGateway());
         orderService = new OrderService(
                 orderRepository, restaurantService, paymentService, null, new RecordingNotificationPublisher());
 
