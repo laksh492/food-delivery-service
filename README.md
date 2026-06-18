@@ -2,6 +2,23 @@
 
 A Spring Boot food-delivery order management API with in-memory or PostgreSQL-backed persistence, role-based access via request headers, simulated payments, and async order notifications.
 
+## Skills & tech stack
+
+- **Java 17+** — core language
+- **Spring Boot 3** — Web, Validation, Data JPA, configuration properties
+- **Maven** — build and dependency management
+- **Lombok** — boilerplate reduction on entities and DTOs
+- **SLF4J** — structured logging
+- **PostgreSQL 16** — production persistence (via Docker Compose)
+- **Spring Data JPA** — repositories, specifications, optimistic locking
+- **H2** — in-memory database for JPA search tests
+- **Docker / Docker Compose** — local Postgres setup
+- **REST API** — thin controllers, request/response DTOs, global exception handling
+- **JUnit 5 & MockMvc** — unit, integration, and concurrency tests
+- **Design patterns** — State (order lifecycle), Repository (memory + JPA), Gateway (payment simulation)
+- **Concurrency** — CAS stock reservation, race-safe partner assignment
+- **Async events** — `ApplicationEventPublisher` with `@Async` notification listeners
+
 ## Requirements
 
 - Java 17+
