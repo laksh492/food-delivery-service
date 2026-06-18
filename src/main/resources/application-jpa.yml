@@ -1,0 +1,21 @@
+app:
+  repository:
+    type: jpa
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/food_delivery
+    username: ${DB_USER:food_user}
+    password: ${DB_PASS:food_pass}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+  sql:
+    init:
+      mode: always
+      platform: postgres

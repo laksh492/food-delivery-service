@@ -1,0 +1,7 @@
+app:
+  repository:
+    type: memory
+
+payment:
+  simulation:
+    mode: ALWAYS_SUCCESS

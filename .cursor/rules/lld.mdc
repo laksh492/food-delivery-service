@@ -1,0 +1,13 @@
+---
+description: LLD workflow
+alwaysApply: true
+---
+
+AGENTS.md is the source of truth.
+
+Before generating code:
+1. Read AGENTS.md.
+2. Follow the discussion order defined there.
+3. Do not generate code until design discussions are complete.
+4. Wait for the user to say "next point" before moving forward.
+5. Wait for explicit approval before implementation.
