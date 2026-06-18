@@ -22,8 +22,6 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 @Getter
 @Setter
@@ -43,13 +41,11 @@ public class Order {
     private Integer restaurantId;
 
     @Enumerated(EnumType.STRING)
-    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
-    @Column(nullable = false, columnDefinition = "app_city")
+    @Column(nullable = false, length = 20)
     private City city;
 
     @Enumerated(EnumType.STRING)
-    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
-    @Column(nullable = false, columnDefinition = "order_status")
+    @Column(nullable = false, length = 30)
     private OrderStatus status;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -74,4 +70,22 @@ public class Order {
     @Version
     @Column(nullable = false)
     private int version;
+
+    public Order(Integer customerId, Restaurant restaurant, List<OrderItem> items, BigDecimal totalAmount) {
+        this.customerId = customerId;
+        this.restaurantId = restaurant.getId();
+        this.city = restaurant.getCity();
+        this.status = OrderStatus.PENDING_PAYMENT;
+        this.items = items;
+        this.totalAmount = totalAmount;
+        this.placedAt = LocalDateTime.now();
+    }
+
+    public void assignPaymentId(Integer paymentId) {
+        this.paymentId = paymentId;
+    }
+
+    public void markDelivered() {
+        this.deliveredAt = LocalDateTime.now();
+    }
 }

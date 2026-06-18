@@ -37,4 +37,11 @@ public class OrderItem {
 
     @Column(nullable = false)
     private int quantity;
+
+    public OrderItem(MenuItem menuItem, int quantity) {
+        this.menuItemId = menuItem.getId();
+        this.nameSnapshot = menuItem.getName();
+        this.unitPriceSnapshot = menuItem.getPrice();
+        this.quantity = quantity;
+    }
 }

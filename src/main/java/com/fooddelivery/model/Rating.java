@@ -1,5 +1,6 @@
 package com.fooddelivery.model;
 
+import com.fooddelivery.dto.request.CreateRatingRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -45,4 +46,15 @@ public class Rating {
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
+    public Rating(Order order, Integer customerId, CreateRatingRequest request) {
+        this.orderId = order.getId();
+        this.customerId = customerId;
+        this.restaurantId = order.getRestaurantId();
+        this.partnerId = order.getAssignedPartnerId();
+        this.restaurantStars = request.getRestaurantStars();
+        this.partnerStars = request.getPartnerStars();
+        this.review = request.getReview();
+        this.createdAt = LocalDateTime.now();
+    }
 }

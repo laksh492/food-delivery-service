@@ -1,5 +1,7 @@
 package com.fooddelivery.model;
 
+import com.fooddelivery.dto.request.CreateMenuItemRequest;
+import com.fooddelivery.dto.request.UpdateMenuItemRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -44,4 +46,24 @@ public class MenuItem {
     @Version
     @Column(nullable = false)
     private int version;
+
+    public MenuItem(Integer restaurantId, CreateMenuItemRequest request) {
+        this.restaurantId = restaurantId;
+        this.name = request.getName();
+        this.description = request.getDescription();
+        this.price = request.getPrice();
+        this.availableStock = request.getAvailableStock();
+        this.available = true;
+    }
+
+    public void updateFrom(UpdateMenuItemRequest request) {
+        this.name = request.getName();
+        this.description = request.getDescription();
+        this.price = request.getPrice();
+        this.available = request.getAvailable();
+    }
+
+    public void updateStock(int availableStock) {
+        this.availableStock = availableStock;
+    }
 }

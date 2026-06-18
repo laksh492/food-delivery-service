@@ -14,8 +14,6 @@ import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 @Getter
 @Setter
@@ -32,13 +30,11 @@ public class DeliveryPartner {
     private Integer userId;
 
     @Enumerated(EnumType.STRING)
-    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
-    @Column(nullable = false, columnDefinition = "app_city")
+    @Column(nullable = false, length = 20)
     private City city;
 
     @Enumerated(EnumType.STRING)
-    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
-    @Column(nullable = false, columnDefinition = "partner_status")
+    @Column(nullable = false, length = 20)
     private PartnerStatus status = PartnerStatus.AVAILABLE;
 
     @Column(name = "current_order_id")
@@ -53,4 +49,22 @@ public class DeliveryPartner {
     @Version
     @Column(nullable = false)
     private int version;
+
+    public DeliveryPartner(Integer userId, City city) {
+        this.userId = userId;
+        this.city = city;
+        this.status = PartnerStatus.AVAILABLE;
+    }
+
+    public void addRating(int stars) {
+        this.ratingSum += stars;
+        this.reviewCount++;
+    }
+
+    public double getAverageRating() {
+        if (reviewCount == 0) {
+            return 0.0;
+        }
+        return (double) ratingSum / reviewCount;
+    }
 }

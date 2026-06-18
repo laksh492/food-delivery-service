@@ -14,8 +14,6 @@ import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 @Getter
 @Setter
@@ -35,8 +33,7 @@ public class Payment {
     private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
-    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
-    @Column(nullable = false, columnDefinition = "payment_status")
+    @Column(nullable = false, length = 20)
     private PaymentStatus status = PaymentStatus.PENDING;
 
     @Column(name = "created_at", nullable = false)
@@ -44,4 +41,18 @@ public class Payment {
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+    public Payment(Integer orderId, BigDecimal amount) {
+        LocalDateTime now = LocalDateTime.now();
+        this.orderId = orderId;
+        this.amount = amount;
+        this.status = PaymentStatus.PENDING;
+        this.createdAt = now;
+        this.updatedAt = now;
+    }
+
+    public void updateStatus(PaymentStatus status) {
+        this.status = status;
+        this.updatedAt = LocalDateTime.now();
+    }
 }

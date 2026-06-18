@@ -1,5 +1,6 @@
 package com.fooddelivery.model;
 
+import com.fooddelivery.dto.request.CreateUserRequest;
 import com.fooddelivery.enums.City;
 import com.fooddelivery.enums.Role;
 import jakarta.persistence.Column;
@@ -13,8 +14,6 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 @Getter
 @Setter
@@ -34,12 +33,17 @@ public class User {
     private String phone;
 
     @Enumerated(EnumType.STRING)
-    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
-    @Column(nullable = false, columnDefinition = "user_role")
+    @Column(nullable = false, length = 30)
     private Role role;
 
     @Enumerated(EnumType.STRING)
-    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
-    @Column(columnDefinition = "app_city")
+    @Column(length = 20)
     private City city;
+
+    public User(CreateUserRequest request) {
+        this.name = request.getName();
+        this.phone = request.getPhone();
+        this.role = request.getRole();
+        this.city = request.getCity();
+    }
 }
