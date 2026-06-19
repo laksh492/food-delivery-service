@@ -84,7 +84,7 @@ public class InMemoryOrderRepository implements OrderRepository {
             if (item.getId() == null) {
                 item.setId(itemSeq.incrementAndGet());
             }
-            item.setOrderId(order.getId());
+            item.setOrder(order);
         }
     }
 }

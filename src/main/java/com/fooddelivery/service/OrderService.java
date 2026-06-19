@@ -48,7 +48,9 @@ public class OrderService {
         BigDecimal totalAmount = calculateTotal(orderItems);
         List<ReservedStock> reserved = reserveStock(orderItems);
 
-        Order order = orderRepository.save(new Order(customerId, restaurant, orderItems, totalAmount));
+        Order pendingOrder = new Order(customerId, restaurant, orderItems, totalAmount);
+      
+        Order order = orderRepository.save(pendingOrder);
 
         try {
             Payment payment = paymentService.charge(order.getId(), totalAmount, request.getPaymentScenario());

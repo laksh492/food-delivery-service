@@ -1,10 +1,14 @@
 package com.fooddelivery.dto.request;
 
 import com.fooddelivery.enums.PaymentScenario;
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Value
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class RetryPaymentRequest {
 
-    PaymentScenario paymentScenario;
+    private PaymentScenario paymentScenario;
 }

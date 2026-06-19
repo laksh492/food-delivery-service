@@ -10,7 +10,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
@@ -48,8 +47,7 @@ public class Order {
     @Column(nullable = false, length = 30)
     private OrderStatus status;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "order_id")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items = new ArrayList<>();
 
     @Column(name = "total_amount", nullable = false, precision = 10, scale = 2)
@@ -76,7 +74,10 @@ public class Order {
         this.restaurantId = restaurant.getId();
         this.city = restaurant.getCity();
         this.status = OrderStatus.PENDING_PAYMENT;
-        this.items = items;
+        this.items = new ArrayList<>(items);
+        for (OrderItem item : this.items) {
+            item.setOrder(this);
+        }
         this.totalAmount = totalAmount;
         this.placedAt = LocalDateTime.now();
     }
