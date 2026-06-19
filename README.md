@@ -2,6 +2,92 @@
 
 A Spring Boot food-delivery order management API with in-memory or PostgreSQL-backed persistence, role-based access via request headers, simulated payments, and async order notifications.
 
+## Table of contents
+
+- [Functional requirements](#functional-requirements)
+  - [Users & access](#users--access)
+  - [Admin](#admin)
+  - [Restaurant discovery & menu](#restaurant-discovery--menu-public--owner)
+  - [Ordering & payments](#ordering--payments-customer)
+  - [Restaurant order handling](#restaurant-order-handling)
+  - [Delivery](#delivery)
+  - [Ratings](#ratings)
+  - [Notifications](#notifications)
+  - [Persistence & infrastructure](#persistence--infrastructure)
+- [Skills & tech stack](#skills--tech-stack)
+- [Requirements](#requirements)
+- [Quick start (in-memory)](#quick-start-in-memory)
+- [Quick start (PostgreSQL)](#quick-start-postgresql)
+- [Configuration](#configuration)
+- [Authentication](#authentication)
+- [Example: smoke test](#example-smoke-test)
+- [Tests](#tests)
+- [Assumptions](#assumptions)
+- [API overview](#api-overview)
+- [Project layout](#project-layout)
+- [Manual test checklist](#manual-test-checklist)
+
+## Functional requirements
+
+The system implements the following capabilities, grouped by actor and domain.
+
+### Users & access
+
+- Register users (`CUSTOMER`, `RESTAURANT_OWNER`, `DELIVERY_PARTNER`, `ADMIN`) with name, phone, role, and optional city.
+- Role-based API access via `X-User-Id` and `X-Role` headers; endpoints reject missing, invalid, or mismatched credentials.
+- Users can fetch their own profile; admins can fetch any user.
+
+### Admin
+
+- Create restaurants (city, owner, name, cuisines).
+- Create delivery partners (user + city).
+- List all restaurants.
+
+### Restaurant discovery & menu (public / owner)
+
+- Search restaurants by city with optional filters: name, cuisine, minimum rating, active flag; supports pagination and sort (`name`, `id`, `rating`).
+- View restaurant details and full menu.
+- Restaurant owners manage menu items: create, update, and patch stock levels.
+- Owners view incoming orders for their restaurant.
+
+### Ordering & payments (customer)
+
+- Place an order with one or more menu items from a single restaurant.
+- Simulated payment on placement; optional `paymentScenario` (`SUCCEED` / `FAIL`) per request (defaults to success).
+- Stock is reserved atomically per item; overselling is prevented under concurrency.
+- Order lifecycle state machine: `PENDING_PAYMENT` → `PLACED` or `PAYMENT_FAILED`; on failure, stock is released.
+- Cancel orders in `PLACED` or `ACCEPTED` (stock released, payment refunded if applicable).
+- Retry payment on `PAYMENT_FAILED` orders (re-reserves stock, re-charges).
+- View own order by id.
+
+### Restaurant order handling
+
+- Accept orders in `PLACED` → `ACCEPTED` (triggers delivery-partner assignment offers).
+- Reject orders in `PLACED` → `REJECTED` (stock released, payment refunded).
+- Owner-only access enforced per restaurant.
+
+### Delivery
+
+- Partners list available assignments in their city (accepted, unassigned orders).
+- Race-safe assignment acceptance: exactly one partner wins when multiple try concurrently.
+- Partner updates delivery status: `PREPARING` → `OUT_FOR_DELIVERY` → `DELIVERED`.
+- Partner is marked available again when order is delivered.
+
+### Ratings
+
+- Customer rates a delivered order once (restaurant stars required; partner stars required if a partner was assigned).
+- Restaurant and delivery partner aggregate ratings (`ratingSum`, `reviewCount`) are updated.
+
+### Notifications
+
+- Async notifications on order status changes (customer, restaurant owner, assigned partner).
+- Fan-out to eligible delivery partners when an order becomes assignable (`ACCEPTED`, same city).
+
+### Persistence & infrastructure
+
+- Pluggable repository layer: in-memory (default) or JPA/PostgreSQL (`jpa` profile).
+- Optimistic locking on contested entities; structured error responses with HTTP status mapping.
+
 ## Skills & tech stack
 
 - **Java 17+** — core language
