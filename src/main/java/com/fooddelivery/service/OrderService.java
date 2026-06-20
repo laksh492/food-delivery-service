@@ -135,6 +135,17 @@ public class OrderService {
     }
 
     @Transactional
+    public Order startPreparing(Integer restaurantId, Integer orderId, Integer ownerUserId) {
+        restaurantService.validateRestaurantOwner(restaurantId, ownerUserId);
+        Order order = getOrderForRestaurant(restaurantId, orderId);
+        OrderStatus previous = order.getStatus();
+        OrderStates.of(order.getStatus()).startPreparing(order);
+        order = orderRepository.save(order);
+        publishStatusChange(order, previous);
+        return order;
+    }
+
+    @Transactional
     public Order updateDeliveryStatus(Integer orderId, Integer partnerId, UpdateDeliveryStatusRequest request) {
         Order order = getOrder(orderId);
         if (order.getAssignedPartnerId() == null || !order.getAssignedPartnerId().equals(partnerId)) {
@@ -146,7 +157,6 @@ public class OrderService {
         OrderState state = OrderStates.of(order.getStatus());
 
         switch (target) {
-            case PREPARING -> state.startPreparing(order);
             case OUT_FOR_DELIVERY -> state.markOutForDelivery(order);
             case DELIVERED -> {
                 state.markDelivered(order);
@@ -154,7 +164,7 @@ public class OrderService {
                 deliveryPartnerService.markPartnerAvailable(partnerId);
             }
             default -> throw new AppException(ErrorCode.INVALID_ORDER_STATE_TRANSITION,
-                    "Unsupported delivery status update: " + target);
+                    "Partners may only update status to OUT_FOR_DELIVERY or DELIVERED");
         }
 
         order = orderRepository.save(order);

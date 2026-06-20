@@ -124,4 +124,13 @@ public class RestaurantController {
         Integer userId = (Integer) httpRequest.getAttribute(AuthConstants.ATTR_USER_ID);
         return ResponseEntity.ok(orderService.rejectOrder(id, orderId, userId));
     }
+
+    @PostMapping("/restaurants/{id}/orders/{orderId}/start-preparing")
+    @RequiresRole(Role.RESTAURANT_OWNER)
+    public ResponseEntity<Order> startPreparing(@PathVariable Integer id,
+                                                @PathVariable Integer orderId,
+                                                HttpServletRequest httpRequest) {
+        Integer userId = (Integer) httpRequest.getAttribute(AuthConstants.ATTR_USER_ID);
+        return ResponseEntity.ok(orderService.startPreparing(id, orderId, userId));
+    }
 }

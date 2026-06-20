@@ -18,7 +18,7 @@ public interface OrderSpringDataRepository extends JpaRepository<Order, Integer>
     Page<Order> findByCityAndAssignedPartnerIdIsNullAndStatus(
             City city, OrderStatus status, Pageable pageable);
 
-    @Modifying
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("""
             UPDATE Order o
             SET o.assignedPartnerId = :partnerId,
